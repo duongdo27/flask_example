@@ -41,7 +41,8 @@ def simple_task(x):
 @celery.task
 def send_async_email():
     with app.app_context():
-        msg = Message('Hello from Flask',
+        msg = Message(subject='Hello from Flask',
+                      body='Here is your information',
                       recipients=['dhdo@csbsju.edu'])
         mail.send(msg)
 
