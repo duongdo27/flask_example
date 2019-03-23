@@ -14,7 +14,7 @@ I use **Celery** to handle email asynchronously.
 
 1. **docker**: contain database to store user and token
 2. **nginx**
-3. **thea_web**: contain Celery, Flask, Flask-Mail, gunicorn, and redis
+3. **web**: contain Celery, Flask, Flask-Mail, gunicorn, and redis
 4. Feel free to modify any file.
 
 ## Route inside app:
@@ -28,3 +28,5 @@ I use **Celery** to handle email asynchronously.
 1. [http://www.celeryproject.org](http://www.celeryproject.org/)
 2. [https://blog.miguelgrinberg.com/post/using-celery-with-flask](https://blog.miguelgrinberg.com/post/using-celery-with-flask)
 3. [https://pythonhosted.org/Flask-Mail](https://pythonhosted.org/Flask-Mail)
+4. [https://github.com/maet3608/minimal-setup-py/blob/master/setup.py](https://github.com/maet3608/minimal-setup-py/blob/master/setup.py)
+5. [https://packaging.python.org/tutorials/packaging-projects](https://packaging.python.org/tutorials/packaging-projects)
