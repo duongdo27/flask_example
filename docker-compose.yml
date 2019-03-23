@@ -7,6 +7,9 @@ services:
     hostname: web
     volumes:
      - ./web:/code
+    depends_on:
+     - db
+     - redis
 
   nginx:
     build:
@@ -14,3 +17,33 @@ services:
       dockerfile: nginx/Dockerfile
     ports:
      - "80:80"
+    depends_on:
+     - web
+
+  db:
+    image: mysql:5.7.21
+    hostname: db
+    environment:
+      MYSQL_DATABASE: 'thea'
+      MYSQL_USER: 'root'
+      MYSQL_ROOT_PASSWORD: 'root'
+    volumes:
+     - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - '3306:3306'
+
+  redis:
+    image: redis:3.0-alpine
+    hostname: redis
+    ports:
+      - '6379:6379'
+
+  celery:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    entrypoint: celery
+    command: worker -l info -A thea_web.app.celery -c 2
+    depends_on:
+     - db
+     - redis
