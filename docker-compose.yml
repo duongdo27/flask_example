@@ -5,6 +5,9 @@ services:
       context: .
       dockerfile: web/Dockerfile
     hostname: web
+    environment:
+      MAIL_USERNAME: $MAIL_USERNAME
+      MAIL_PASSWORD: $MAIL_PASSWORD
     volumes:
      - ./web:/code
     depends_on:
@@ -44,6 +47,9 @@ services:
       dockerfile: web/Dockerfile
     entrypoint: celery
     command: worker -l info -A thea_web.app.celery -c 2
+    environment:
+      MAIL_USERNAME: $MAIL_USERNAME
+      MAIL_PASSWORD: $MAIL_PASSWORD
     depends_on:
      - db
      - redis

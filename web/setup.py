@@ -12,6 +12,7 @@ setup(name='thea-web',
       install_requires=[
           'celery',
           'Flask',
+          'Flask-Mail',
           'gunicorn',
           'pymysql',
           'redis'
