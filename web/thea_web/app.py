@@ -1,56 +1,59 @@
 import os
-import logging
+import logging, threading, queue, time
 from time import sleep
 from flask import Flask
 from flask import request
 from flask_mail import Mail
 from flask_mail import Message
-from celery import Celery
 from thea_web.database import query_data
+from thea_web.ThreadSub import sleepsub
+
 
 app = Flask(__name__)
-
-# Celery config
-app.config['CELERY_BROKER_URL'] = 'redis://redis:6379/0'
-app.config['CELERY_RESULT_BACKEND'] = 'redis://redis:6379/0'
-
-celery = Celery(app.name,
-                broker=app.config['CELERY_BROKER_URL'],
-                backend=app.config['CELERY_RESULT_BACKEND'])
-celery.conf.update(app.config)
-
 
 # Mail config
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_USERNAME'] = 'duongdopython@gmail.com'
+app.config['MAIL_PASSWORD'] = 'Flask123'
+app.config['MAIL_DEFAULT_SENDER'] = 'duongdopython@gmail.com'
 
 mail = Mail(app)
-
-
-@celery.task
-def simple_task(x):
-    print('Start simple task')
-    sleep(x)
-    print('Complete simple task')
-
-
-@celery.task
-def send_async_email():
-    with app.app_context():
-        msg = Message(subject='Hello from Flask',
-                      body='Here is your information',
-                      recipients=['dhdo@csbsju.edu'])
-        mail.send(msg)
 
 
 @app.route('/')
 def index():
     app.logger.info('Route index visited')
     return 'Hello World!'
+
+
+@app.route('/thread')
+def thread():
+    logging.basicConfig(level=logging.DEBUG,
+                        format='(%(threadName)-10s) %(message)s',
+                        )
+
+    q = queue.Queue()
+
+    s = '5'
+    t = threading.Thread(name='Thread Test', target=sleepsub, args=(s, q))
+    t.start()
+
+    logging.debug("I can keep going.")
+
+    while True:
+        if t.isAlive():
+            logging.debug("Is still active.")
+            time.sleep(.5)
+        else:
+            logging.debug("Is no longer active.")
+            return_value = q.get()
+            logging.debug(return_value)
+            break
+
+    logging.debug("Let's continue.")
+    return return_value
 
 
 def get_token_lookup():

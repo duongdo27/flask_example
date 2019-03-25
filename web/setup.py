@@ -10,11 +10,9 @@ setup(name='thea-web',
       license='MIT',
       packages=find_packages(exclude=['contrib', 'docs', 'tests']),
       install_requires=[
-          'celery',
           'Flask',
           'Flask-Mail',
           'gunicorn',
           'pymysql',
-          'redis'
       ],
       zip_safe=False)
